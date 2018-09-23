@@ -6,7 +6,7 @@ function getdb() {
    $host        = "host=10.3.9.185";
    $port        = "port=1032";
    $dbname      = "dbname=iii";
-   $credentials = "user=sierra_sql password=1W0tlfg!5afJmNJV1EZ8";
+   $credentials = "user=sierra_sql password=pass";
    $ssl         = "sslmode=require";
 
    $db = pg_connect("$host $port $dbname $credentials $ssl") or die('connection failed');
