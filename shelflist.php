@@ -1,17 +1,7 @@
 <?php
 /*script provided by Larry Hansard at Middle Tennessee State University libraries*/
 
-function getdb() {
- 
-   $host        = "host=0.0.0";
-   $port        = "port=1032";
-   $dbname      = "dbname=iii";
-   $credentials = "user=user password=pass";
-   $ssl         = "sslmode=require";
-
-   $db = pg_connect("$host $port $dbname $credentials $ssl") or die('connection failed');
-   return $db;
-}
+require_once('getdb.php');
 
 $db_handle = getdb(); //call the db function
 
