@@ -80,9 +80,7 @@ $statement = $connection->prepare($sql);
 $statement->execute();
 $return_array = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-foreach ($return_array as $row){
-  echo "$row <br>";
-}
+echo $return_array
 
 $row = null;
 $statement = null;
