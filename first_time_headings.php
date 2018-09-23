@@ -1,4 +1,6 @@
 <?php
+//https://gist.github.com/rayvoelker/36671222826d6560e1e4592793231bdf
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/../includes/catalog_reports.php');
 $max_weeks = 52;
 header( 'Content-type: text/html; charset=utf-8' );
