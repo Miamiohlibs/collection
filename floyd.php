@@ -1,37 +1,20 @@
 <?php
-
-/*
-//
-// Ray Voelker
-// University of Dayton Libraries
-// 300 College Park Dayton, OH 45419-1360
-// rvoelker1@udayton.edu
-// ray.voelker@gmail.com
-//  If you have any questions or comments
-//  about this script, page or feature, please
-//  feel free to contact me.
-//
-*/
+//https://raw.githubusercontent.com/rayvoelker/2015RoeschLibraryInventory/master/php/inventory_barcode.php
 
 // sanitize the input
 if ( isset($_GET['barcode']) )  {
 	header("Content-Type: application/json");
 	// ensure that the barcode value is formatted somewhat sanely
-	if( strlen($_GET['barcode']) > 12 ) {
-		//we don't expect barcodes to be longer than 12 alpha-numeric characters
-		//although, 99.9 % of our scannable barcodes are 10 digit, I'm leaving some breathing room
-		die();
-	}
+
 	// barcodes are ONLY alpha-numeric ... strip anything that isn't this.
-	$barcode = preg_replace("/[^a-zA-Z0-9\s]/", "", $_GET['barcode']);
+	$barcode = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['barcode']);
 }
 else{
-	//send an empty object and then quit the script
-	echo "{}";
 	die();
 }
 
 /*
+
 include file (item_barcode.php) supplies the following
 arguments as the example below illustrates :
 	$username = "username";
@@ -76,7 +59,8 @@ $sql = '
 SELECT
 
 -- p.call_number_norm,
-upper(p.call_number_norm || COALESCE(\' \' || v.field_content, \'\') ) as call_number_norm,
+upper(p.call_number_norm) as call_number_norm,
+v.field_content as volume,
 i.location_code, i.item_status_code,
 b.best_title,
 c.due_gmt, i.inventory_gmt
@@ -124,12 +108,15 @@ e.index_tag || e.index_entry = \'b\' || LOWER(\'' . $barcode . '\')
 $statement = $connection->prepare($sql);
 $statement->execute();
 $row = $statement->fetch(PDO::FETCH_ASSOC);
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json; charset=utf8');
+
+//need to loop through the rows json encoding the entire array
+
+header('Content-Type: application/json');
 echo json_encode($row);
+
+
 
 $row = null;
 $statement = null;
 $connection = null;
-
 ?>
