@@ -86,20 +86,16 @@ ON
 
 WHERE
 e.index_tag || e.index_entry = \'b\' || UPPER(\'' . $barcode . '\')
-OR
-e.index_tag || e.index_entry = \'b\' || LOWER(\'' . $barcode . '\')
 ';
 
 $statement = $connection->prepare($sql);
 $statement->execute();
-$row = $statement->fetch(PDO::FETCH_ASSOC);
 
-//need to loop through the rows json encoding the entire array
+while($row = $statement->fetch(PDO::FETCH_ASSOC)){
 
-header('Content-Type: application/json');
-echo json_encode($row);
+	echo json_encode($row);
 
-
+};
 
 $row = null;
 $statement = null;
