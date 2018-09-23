@@ -51,7 +51,23 @@ $password = null;
 $dsn = null;
 $connection = null;
 
-require_once('sierra_cred.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/../includes/sql/sqlinv_group.php');
+
+//make our database connection
+try {
+	// $connection = new PDO($dsn, $username, $password, array(PDO::ATTR_PERSISTENT => true));
+	$connection = new PDO($dsn, $username, $password);
+}
+
+catch ( PDOException $e ) {
+	$row = null;
+	$statement = null;
+	$connection = null;
+
+	echo "problem connecting to database...\n";
+	error_log('PDO Exception: '.$e->getMessage());
+	exit(1);
+}
 
 //set output to utf-8
 $connection->query('SET NAMES UNICODE');
