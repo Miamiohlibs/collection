@@ -1,7 +1,7 @@
 <?php
 //https://gist.github.com/rayvoelker/36671222826d6560e1e4592793231bdf
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/../includes/catalog_reports.php');
+require_once('sierra_cred.php');
 $max_weeks = 52;
 header( 'Content-type: text/html; charset=utf-8' );
 ob_start();
@@ -76,7 +76,7 @@ function create_query ($min_date, $max_date, $index_tag) {
 		c.is_locked as						c_is_locked,
 		c.is_viewed as						c_is_viewed,
 		c.condition_code_num as				c_condition_code_num,
-		c.index_tag as 						c_index_tag, 
+		c.index_tag as 						c_index_tag,
 		c.index_entry as 					c_index_entry,
 		c.record_metadata_id as				c_record_metadata_id,
 		c.statistics_group_code_num as		c_statistics_group_code_num,
