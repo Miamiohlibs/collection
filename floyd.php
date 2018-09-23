@@ -51,7 +51,7 @@ $password = null;
 $dsn = null;
 $connection = null;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/../includes/sql/sqlinv_group.php');
+require_once('sierra_cred.php');
 
 //make our database connection
 try {
