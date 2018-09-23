@@ -51,7 +51,13 @@ function batchShelf() {
   
   var result = UrlFetchApp.fetch(url);  
   var json_data = JSON.parse(result.getContentText());
-  Logger.log(json_data[0]);
+  var payload = JSON.stringify(json_data); //string representation?
+  Logger.log(json_data);
+  
+  var shelflist = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('shelflist');
+  shelflist.getRange(1,1,json_data.length,7).setValues(json_data);
+  
+ 
   
   
   //continue trying to send the location and return json content from shelflist.php on ulblweb
@@ -59,5 +65,3 @@ function batchShelf() {
   
   
 }//end function batchShelf
-
-
