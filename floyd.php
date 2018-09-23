@@ -80,13 +80,9 @@ $statement = $connection->prepare($sql);
 $statement->execute();
 $return_array = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$encode_array['data'] = $return_array;
-$encode_array['query'] = $sql;
-
-//$row['query'] = $sql;
-
-header('Content-Type: application/json');
-echo json_encode($encode_array, JSON_PRETTY_PRINT);
+foreach ($return_array as $row){
+  echo "$row <br>";
+}
 
 $row = null;
 $statement = null;
