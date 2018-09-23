@@ -1,5 +1,50 @@
 <?php
 
+/*
+//
+// Ray Voelker
+// University of Dayton Libraries
+// 300 College Park Dayton, OH 45419-1360
+// rvoelker1@udayton.edu
+// ray.voelker@gmail.com
+//  If you have any questions or comments
+//  about this script, page or feature, please
+//  feel free to contact me.
+//
+*/
+
+// sanitize the input
+if ( isset($_GET['barcode']) )  {
+	header("Content-Type: application/json");
+	// ensure that the barcode value is formatted somewhat sanely
+	if( strlen($_GET['barcode']) > 12 ) {
+		//we don't expect barcodes to be longer than 12 alpha-numeric characters
+		//although, 99.9 % of our scannable barcodes are 10 digit, I'm leaving some breathing room
+		die();
+	}
+	// barcodes are ONLY alpha-numeric ... strip anything that isn't this.
+	$barcode = preg_replace("/[^a-zA-Z0-9\s]/", "", $_GET['barcode']);
+}
+else{
+	//send an empty object and then quit the script
+	echo "{}";
+	die();
+}
+
+/*
+include file (item_barcode.php) supplies the following
+arguments as the example below illustrates :
+	$username = "username";
+	$password = "password";
+
+	$dsn = "pgsql:"
+		. "host=sierra-db.school.edu;"
+		. "dbname=iii;"
+		. "port=1032;"
+		. "sslmode=require;"
+		. "charset=utf8;"
+*/
+
 //reset all variables needed for our connection
 $username = null;
 $password = null;
@@ -8,79 +53,64 @@ $connection = null;
 
 require_once('sierra_cred.php');
 
-//make our database connection
-
 //set output to utf-8
 $connection->query('SET NAMES UNICODE');
 
 $sql = '
 SELECT
--- i.inventory_gmt,
-lower(p.barcode) as barcode,
-upper(p.call_number_norm || COALESCE(' ' || v.field_content, '') ) as call_number_norm,
-b.best_title AS best_title,
-i.location_code AS location,
-i.item_status_code AS status,
-s.content AS inventory_note,
-to_timestamp(c.due_gmt::text, 'YYYY-MM-DD HH24:MI:SS') as due_gmt --some dates may require 24 hour time stamp; idk
+
+-- p.call_number_norm,
+upper(p.call_number_norm || COALESCE(\' \' || v.field_content, \'\') ) as call_number_norm,
+i.location_code, i.item_status_code,
+b.best_title,
+c.due_gmt, i.inventory_gmt
+
+-- *
 
 FROM
-sierra_view.item_record_property	AS p
+
+sierra_view.phrase_entry				AS e
+
 JOIN
-sierra_view.item_record			AS i
+sierra_view.item_record_property		AS p
 ON
-  p.item_record_id = i.id
+  e.record_id = p.item_record_id
+
+  JOIN sierra_view.item_record			AS i
+ON
+  i.id = p.item_record_id
+
+LEFT OUTER JOIN sierra_view.checkout	AS c
+ON
+  i.id = c.item_record_id
+
+-- This JOIN will get the Title and Author from the bib
+JOIN
+sierra_view.bib_record_item_record_link	AS l
+ON
+  l.item_record_id = e.record_id
+JOIN
+sierra_view.bib_record_property			AS b
+ON
+  l.bib_record_id = b.bib_record_id
 
 LEFT OUTER JOIN
-sierra_view.subfield			AS s
+sierra_view.varfield					AS v
 ON
-  (s.record_id = p.item_record_id) AND s.field_type_code = 'w'
-
-LEFT OUTER JOIN
-sierra_view.checkout			AS c
-ON
-  (i.record_id = c.item_record_id)
-
-LEFT OUTER JOIN
-sierra_view.varfield			AS v
-ON
-  i.id = v.record_id AND v.varfield_type_code = 'v'
-
-LEFT JOIN
-sierra_view.bib_record_item_record_link AS l
-ON
-  l.item_record_id = i.id
-
-LEFT JOIN
-sierra_view.bib_record_property as b
-ON
-  b.bib_record_id = l.bib_record_id
+  (i.id = v.record_id) AND (v.varfield_type_code = \'v\')
 
 WHERE
-i.location_code = 'imje'
---   --comment out this section for items organized by title
--- AND
--- p.call_number_norm >= lower('PR 4879 L2 D83 2009')
--- AND
--- p.call_number_norm <= lower('PZ    7 B8163 WH19')
-
-
-
-order by
-p.call_number_norm ASC,
-l.items_display_order ASC
-
---LIMIT 10000
-
-
-'
-;
+e.index_tag || e.index_entry = \'b\' || UPPER(\'' . $barcode . '\')
+OR
+e.index_tag || e.index_entry = \'b\' || LOWER(\'' . $barcode . '\')
+';
 
 $statement = $connection->prepare($sql);
 $statement->execute();
-$return_array = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-echo $return_array
+$row = $statement->fetch(PDO::FETCH_ASSOC);
+header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json; charset=utf8');
+echo json_encode($row);
 
 $row = null;
 $statement = null;
