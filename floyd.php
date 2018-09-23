@@ -7,23 +7,14 @@ $password = null;
 $dsn = null;
 $connection = null;
 
-require_once('../sierra_cred.php');
+require_once('sierra_cred.php');
 
 //make our database connection
 try {
 	// $connection = new PDO($dsn, $username, $password, array(PDO::ATTR_PERSISTENT => true));
-	$connection = new PDO($dsn, $username, $password);
+	$connection = pg_connect($dsn, $username, $password);
 }
 
-catch ( PDOException $e ) {
-	$row = null;
-	$statement = null;
-	$connection = null;
-
-	echo "problem connecting to database...\n";
-	error_log('PDO Exception: '.$e->getMessage());
-	exit(1);
-}
 
 //set output to utf-8
 $connection->query('SET NAMES UNICODE');
@@ -70,13 +61,8 @@ m.campus_code = ''
 
 $statement = $connection->prepare($sql);
 $statement->execute();
-$row = $statement->fetch(PDO::FETCH_ASSOC);
+$row = $statement->fetch(PDO::fetchAll);
 
-if($row["volume"]) {
-	$row["call_number_norm"] = $row["call_number_norm"] .
-		" " .
-		normalize_volume($row["volume"]);
-}
 
 header('Content-Type: application/json');
 echo json_encode($row);
@@ -84,7 +70,6 @@ echo json_encode($row);
 $row = null;
 $statement = null;
 $connection = null;
-
 
 
 
