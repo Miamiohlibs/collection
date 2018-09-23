@@ -36,8 +36,6 @@ $connection = null;
 
 require_once('sierra_cred.php');
 
-//make our database connection
-
 
 //set output to utf-8
 $connection->query('SET NAMES UNICODE');
