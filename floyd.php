@@ -10,10 +10,7 @@ $connection = null;
 require_once('sierra_cred.php');
 
 //make our database connection
-try {
-	// $connection = new PDO($dsn, $username, $password, array(PDO::ATTR_PERSISTENT => true));
-	$connection = pg_connect($dsn, $username, $password);
-}
+	$connection = pg_connect($dsn, $username, $password) or die("Could not connect");
 
 
 //set output to utf-8
@@ -59,9 +56,9 @@ m.campus_code = ''
 --ORDER BY p.call_number_norm ASC
 ';
 
-$statement = $connection->prepare($sql);
-$statement->execute();
-$row = $statement->fetch(PDO::fetchAll);
+$statement = pg_query($connection, $sql);
+
+$row = pg_fetch_result($statement, 1, 0);
 
 
 header('Content-Type: application/json');
@@ -71,6 +68,6 @@ $row = null;
 $statement = null;
 $connection = null;
 
-
+pg_close($connection);
 
 ?>
