@@ -1,5 +1,34 @@
 <?php
 
+
+//reset all variables needed for our connection
+$username = null;
+$password = null;
+$dsn = null;
+$connection = null;
+
+require_once('../sierra_cred.php');
+
+//make our database connection
+try {
+	// $connection = new PDO($dsn, $username, $password, array(PDO::ATTR_PERSISTENT => true));
+	$connection = new PDO($dsn, $username, $password);
+}
+
+catch ( PDOException $e ) {
+	$row = null;
+	$statement = null;
+	$connection = null;
+
+	echo "problem connecting to database...\n";
+	error_log('PDO Exception: '.$e->getMessage());
+	exit(1);
+}
+
+//set output to utf-8
+$connection->query('SET NAMES UNICODE');
+
+$sql = '
 SELECT
 --*
 --Nate wants call #, title, last check-in, total checkouts
@@ -37,5 +66,26 @@ AND
 m.campus_code = ''
 
 --ORDER BY p.call_number_norm ASC
+';
+
+$statement = $connection->prepare($sql);
+$statement->execute();
+$row = $statement->fetch(PDO::FETCH_ASSOC);
+
+if($row["volume"]) {
+	$row["call_number_norm"] = $row["call_number_norm"] .
+		" " .
+		normalize_volume($row["volume"]);
+}
+
+header('Content-Type: application/json');
+echo json_encode($row);
+
+$row = null;
+$statement = null;
+$connection = null;
+
+
+
 
 ?>
