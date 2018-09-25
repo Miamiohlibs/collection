@@ -1,5 +1,5 @@
 <?php
-/*script provided by Larry Hansard at Middle Tennessee State University libraries*/
+/*script written by Craig Boman, Miami University Libraries */
 
 require_once('getdb.php');
 
