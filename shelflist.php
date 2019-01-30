@@ -1,5 +1,11 @@
 <?php
-/*script written by Craig Boman, Miami University Libraries */
+/*script written by Craig Boman, Miami University Libraries 
+with the purpose of providing information as part of a library inventory.
+The script receives formatted URL data from Google sheets with a location code and 
+call number start and call number end. Script works best with normally formatted and
+continous ascdending call number data. If call number ranges are continuous but multiple
+locations are interfiled in the spreadsheet this will error out. Only feed in call
+number ranges with a single unique location.*/
 
 require_once('getdb.php');
 
