@@ -1,7 +1,7 @@
 function batchShelf() {
-  var start = 'AY   67 N5 W7  2005';
-  var end = 'PN  171 F56 W35 1998';
-  var location = 'scr';
+//  var start = 'AY   67 N5 W7  2005';
+//  var end = 'PN  171 F56 W35 1998';
+//  var location = 'scr';
 
 
   var spread_sheet_name = SpreadsheetApp.getActiveSpreadsheet().getName();
