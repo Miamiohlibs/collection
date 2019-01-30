@@ -5,7 +5,10 @@ The script receives formatted URL data from Google sheets with a location code a
 call number start and call number end. Script works best with normally formatted and
 continous ascdending call number data. If call number ranges are continuous but multiple
 locations are interfiled in the spreadsheet this will error out. Only feed in call
-number ranges with a single unique location.*/
+number ranges with a single unique location.
+
+Sample URL: http://ulblwebt02.lib.miamioh.edu/~bomanca/collection/shelflist.php?location=scr&start=AY%20%20%2067%20N5%20W7%20%202005&end=PN%20%20171%20F56%20W35%201998
+*/
 
 require_once('getdb.php');
 
