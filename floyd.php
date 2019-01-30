@@ -1,103 +1,85 @@
 <?php
-//https://raw.githubusercontent.com/rayvoelker/2015RoeschLibraryInventory/master/php/inventory_barcode.php
-
-// sanitize the input
-if ( isset($_GET['barcode']) )  {
-	header("Content-Type: application/json");
-	// ensure that the barcode value is formatted somewhat sanely
-
-	// barcodes are ONLY alpha-numeric ... strip anything that isn't this.
-	$barcode = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['barcode']);
-}
-else{
-	die();
-}
-
 /*
+Purpose of this script is to provide a basic output for subject selectors to weed collections
 
-include file (item_barcode.php) supplies the following
-arguments as the example below illustrates :
-	$username = "username";
-	$password = "password";
-
-	$dsn = "pgsql:"
-		. "host=sierra-db.school.edu;"
-		. "dbname=iii;"
-		. "port=1032;"
-		. "sslmode=require;"
-		. "charset=utf8;"
+Sample URL: http://ulblwebt02.lib.miamioh.edu/~bomanca/collection/floyd.php?location=scr&start=AY%20%20%2067%20N5%20W7%20%202005&end=PN%20%20171%20F56%20W35%201998
 */
 
-//reset all variables needed for our connection
-$username = null;
-$password = null;
-$dsn = null;
-$connection = null;
+require_once('getdb.php');
 
-require_once('sierra_cred.php');
+$db_handle = getdb(); //call the db function
 
+$start = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['start']);
+$end = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['end']);
+$location = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['location']);
 
-//set output to utf-8
-$connection->query('SET NAMES UNICODE');
-
-$sql = '
+$query = " 
 SELECT
-
--- p.call_number_norm,
-upper(p.call_number_norm) as call_number_norm,
-v.field_content as volume,
-i.location_code, i.item_status_code,
+e.index_entry,
+p.call_number_norm,
+i.location_code,
+i.item_status_code,
 b.best_title,
-c.due_gmt, i.inventory_gmt
-
--- *
-
+c.due_gmt,
+i.inventory_gmt
 FROM
-
-sierra_view.phrase_entry				AS e
+sierra_view.item_record_property AS p
+JOIN
+sierra_view.phrase_entry AS e
+ON
+e.record_id = p.item_record_id
 
 JOIN
-sierra_view.item_record_property		AS p
+sierra_view.item_record AS i
 ON
-  e.record_id = p.item_record_id
-
-  JOIN sierra_view.item_record			AS i
+p.item_record_id = i.id
+LEFT OUTER JOIN
+sierra_view.subfield			AS s
 ON
-  i.id = p.item_record_id
-
-LEFT OUTER JOIN sierra_view.checkout	AS c
-ON
-  i.id = c.item_record_id
-
--- This JOIN will get the Title and Author from the bib
-JOIN
-sierra_view.bib_record_item_record_link	AS l
-ON
-  l.item_record_id = e.record_id
-JOIN
-sierra_view.bib_record_property			AS b
-ON
-  l.bib_record_id = b.bib_record_id
+  (s.record_id = p.item_record_id) AND s.field_type_code = 'w'
 
 LEFT OUTER JOIN
-sierra_view.varfield					AS v
+sierra_view.checkout			AS c
 ON
-  (i.id = v.record_id) AND (v.varfield_type_code = \'v\')
+  (i.record_id = c.item_record_id)
+
+
+LEFT OUTER JOIN
+sierra_view.varfield			AS v
+ON
+  i.id = v.record_id AND v.varfield_type_code = 'v'
+
+LEFT JOIN
+sierra_view.bib_record_item_record_link AS l
+ON
+  l.item_record_id = i.id
+
+LEFT JOIN
+sierra_view.bib_record_property as b
+ON
+  b.bib_record_id = l.bib_record_id
 
 WHERE
-e.index_tag || e.index_entry = \'b\' || UPPER(\'' . $barcode . '\')
-';
+i.location_code = '$location'
 
-$statement = $connection->prepare($sql);
-$statement->execute();
+  --comment out this section for items organized by title
+AND
+p.call_number_norm BETWEEN lower('$start') AND lower('$end')
 
-while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+--LIMIT 10
+ORDER BY
+p.call_number_norm ASC
+";
 
-	echo json_encode($row);
 
-};
+$result = pg_query($db_handle, $query);
+ 
+$rows = array();
+while($r = pg_fetch_row($result)) {
+      $rows[] = $r;
+ }
+echo json_encode($rows);
 
-$row = null;
-$statement = null;
-$connection = null;
+ pg_free_result($result);
+//deprecated pg_close($db_handle);
 ?>
