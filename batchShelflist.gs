@@ -1,10 +1,10 @@
 //scripts are for integrating with collection development weeding reports
 
-
 function batchShelf() {
 //  var start = 'AY   67 N5 W7  2005';
 //  var end = 'PN  171 F56 W35 1998';
 //  var location = 'scr';
+
 
 
   var spread_sheet_name = SpreadsheetApp.getActiveSpreadsheet().getName();
@@ -35,9 +35,11 @@ function batchShelf() {
   Logger.log(json_data);
 
   //have the name of the new spreadsheet be a concat of TODAY+weeding
-  var shelflist = SpreadsheetApp.getActive().insertSheet('shelflist', SpreadsheetApp.getActive().getSheets().length);
+  var today = Date();
+  Logger.log(today);
+  var shelflist = SpreadsheetApp.getActive().insertSheet(today, SpreadsheetApp.getActive().getSheets().length);
 
-  //var shelflist = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('shelflist');
+
   shelflist.getRange(1,1,json_data.length,json_data[0].length).setValues(json_data);
 
   //try to automatically create spreadsheet named shelflist
