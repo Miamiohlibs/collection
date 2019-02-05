@@ -7,10 +7,10 @@ p.call_number_norm,
 -- Volume
 b.best_author,
 b.best_title,
-b.publish_year
+b.publish_year,
 i.last_checkin_gmt,
 i.checkout_total,
-i.internal_use_count,
+i.internal_use_count
 -- Renewals,
 FROM
   sierra_view.item_record_property 	AS p
@@ -65,5 +65,5 @@ AND
 p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
 
 --LIMIT 100
---ORDER BY
---p.call_number_norm ASC
+ORDER BY
+p.call_number_norm ASC
