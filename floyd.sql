@@ -58,11 +58,15 @@ m.campus_code = ''
 
 AND
 
-i.location_code = 'scr'
+--i.location_code = 'scr' --test
+i.location_code = '$location'  --production
 
   --comment out this section for items organized by title
 AND
-p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
+--test
+--p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
+--production
+p.call_number_norm BETWEEN lower('$start') AND lower('$end')
 
 --LIMIT 100
 ORDER BY
