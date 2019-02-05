@@ -5,6 +5,8 @@ function batchShelf() {
 //  var end = 'PN  171 F56 W35 1998';
 //  var location = 'scr';
 
+
+
   var spread_sheet_name = SpreadsheetApp.getActiveSpreadsheet().getName();
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('weeding_criteria');
   //find all the items that may not have been filled in correctly.
@@ -38,10 +40,10 @@ function batchShelf() {
   var shelflist = SpreadsheetApp.getActive().insertSheet(today, SpreadsheetApp.getActive().getSheets().length);
 
   var columns = [["item record","item status","call number","author","title","pub year","last checkout date","checkout total","internal use"]];
-  Logger.log(columns);
+  Logger.log(columns[0].length);
 
   shelflist.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data);
-  shelflist.getRange(1,1,1,columns.length).setValues(columns);
+  shelflist.getRange(1,1,1,columns[0].length).setValues(columns);
 
 
 
