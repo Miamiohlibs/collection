@@ -35,12 +35,15 @@ function batchShelf() {
   Logger.log(json_data);
 
   //have the name of the new spreadsheet be a concat of TODAY+weeding
-  var today = Date();
+  var today = Utilities.formatDate(new Date(), "GMT-5", "yyyy-MM-dd");
   Logger.log(today);
   var shelflist = SpreadsheetApp.getActive().insertSheet(today, SpreadsheetApp.getActive().getSheets().length);
 
+  var columns = JSON.parse(["item record","item status"]);
+  Logger.log(columns);
 
-  shelflist.getRange(1,1,json_data.length,json_data[0].length).setValues(json_data);
+  shelflist.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data);
+  shelflist.getRange(1,1,1,columns.length).setValues(columns);
 
   //try to automatically create spreadsheet named shelflist
 
