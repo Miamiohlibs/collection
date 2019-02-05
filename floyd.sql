@@ -1,18 +1,17 @@
 ﻿SELECT
---*
---p.call_number_norm,
---m.record_type_code || m.record_num	AS item_record_num,
---i.item_status_code,
+--count(*)
+m.record_type_code || m.record_num	AS item_record_num,
+i.item_status_code,
 -- Copy --not sure we can get copy
--- p.call_number_norm,
+p.call_number_norm,
 -- Volume
--- b.best_author,
--- b.best_title,
--- i.last_checkin_gmt,
--- i.checkout_total,
--- i.internal_use_count,
+b.best_author,
+b.best_title,
+b.publish_year
+i.last_checkin_gmt,
+i.checkout_total,
+i.internal_use_count,
 -- Renewals,
-s.content   --Pub Date --var field
 FROM
   sierra_view.item_record_property 	AS p
 JOIN
@@ -53,14 +52,6 @@ LEFT JOIN
 ON
   b.bib_record_id = l.bib_record_id
 
-LEFT OUTER JOIN
-  sierra_view.subfield			AS s
-ON
-  s.record_id = b.bib_record_id
-AND
-  s.marc_tag = '260' 
-AND 
-  s.tag = 'c'
 
 WHERE
 m.campus_code = ''
@@ -73,6 +64,6 @@ i.location_code = 'scr'
 AND
 p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
 
-LIMIT 100
+--LIMIT 100
 --ORDER BY
 --p.call_number_norm ASC
