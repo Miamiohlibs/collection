@@ -1,11 +1,22 @@
 //scripts are for integrating with collection development weeding reports
 
 
+function onOpen() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var menuEntries = [];
+
+  menuEntries.push({name: "Generate Weeding List", functionName: "batchShelf"});
+  menuEntries.push({name: "Update Locations", functionName: "runLocations"});
+
+  spreadsheet.addMenu("Weeding", menuEntries);
+} //end function onOpen()
+
+
+
 function batchShelf() {
 //  var start = 'AY   67 N5 W7  2005';
 //  var end = 'PN  171 F56 W35 1998';
 //  var location = 'scr';
-
 
   var spread_sheet_name = SpreadsheetApp.getActiveSpreadsheet().getName();
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('weeding_criteria');
@@ -35,13 +46,23 @@ function batchShelf() {
   Logger.log(json_data);
 
   //have the name of the new spreadsheet be a concat of TODAY+weeding
-  var shelflist = SpreadsheetApp.getActive().insertSheet('shelflist', SpreadsheetApp.getActive().getSheets().length);
+  var today = Utilities.formatDate(new Date(), "GMT-5", "yyyy-MM-dd");
+  Logger.log(today);
+  var shelflist = SpreadsheetApp.getActive().insertSheet(today, SpreadsheetApp.getActive().getSheets().length);
 
-  //var shelflist = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('shelflist');
-  shelflist.getRange(1,1,json_data.length,json_data[0].length).setValues(json_data);
+  var columns = [["item record","item status","call number","author","title","pub year","last checkout date","checkout total","internal use"]];
+  Logger.log(columns[0].length);
 
-  //try to automatically create spreadsheet named shelflist
+  shelflist.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data);
+  shelflist.getRange(1,1,1,columns[0].length).setValues(columns);
 
 
 
 }//end function batchShelf
+
+
+function runLocations() {
+
+
+
+}//end runLocations
