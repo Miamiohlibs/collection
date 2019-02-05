@@ -11,10 +11,13 @@ $db_handle = getdb(); //call the db function
 
 $query = "
 SELECT
---Locations
+l.code
 FROM
-sierra_view.item_record_property AS p
+sierra_view.location AS l
 
+--LIMIT 10
+
+ORDER BY l.code ASC
 ";
 
 
