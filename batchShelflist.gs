@@ -1,11 +1,22 @@
 //scripts are for integrating with collection development weeding reports
 
+
+function onOpen() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var menuEntries = [];
+
+  menuEntries.push({name: "Generate Weeding List", functionName: "batchShelf"});
+  menuEntries.push({name: "Update Locations", functionName: "runLocations"});
+
+  spreadsheet.addMenu("Weeding", menuEntries);
+} //end function onOpen()
+
+
+
 function batchShelf() {
 //  var start = 'AY   67 N5 W7  2005';
 //  var end = 'PN  171 F56 W35 1998';
 //  var location = 'scr';
-
-
 
   var spread_sheet_name = SpreadsheetApp.getActiveSpreadsheet().getName();
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('weeding_criteria');
@@ -48,3 +59,10 @@ function batchShelf() {
 
 
 }//end function batchShelf
+
+
+function runLocations() {
+
+
+
+}//end runLocations
