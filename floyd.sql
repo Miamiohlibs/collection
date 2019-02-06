@@ -1,8 +1,9 @@
-﻿SELECT
+﻿--Query by Craig Boman Miami University Libraries
+
+SELECT
 --count(*)
 DISTINCT m.record_type_code || m.record_num	AS item_record_num,
 i.item_status_code || ' ' || sn.name AS item_status,
---include status code label 
 -- Copy --not sure we can get copy
 p.call_number_norm,
 -- Volume
@@ -16,9 +17,8 @@ i.internal_use_count,
 
 
   (SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id
-    AND i.item_status_code IN ('-','p')) AS "Good items"
-    
-
+    AND i.item_status_code IN ('-','o')) AS "Good items"  --good items select by Phil Shirley
+ 
 
 FROM
   sierra_view.item_record_property 	AS p
