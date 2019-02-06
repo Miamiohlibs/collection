@@ -1,6 +1,6 @@
 ﻿SELECT
 --count(*)
-m.record_type_code || m.record_num	AS item_record_num,
+DISTINCT m.record_type_code || m.record_num	AS item_record_num,
 i.item_status_code,
 -- Copy --not sure we can get copy
 p.call_number_norm,
@@ -10,8 +10,15 @@ b.best_title,
 b.publish_year,
 i.last_checkin_gmt,
 i.checkout_total,
-i.internal_use_count
+i.internal_use_count,
 -- Renewals,
+
+
+  (SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id
+    AND i.item_status_code IN ('-','p')) AS "Good items"
+    
+
+
 FROM
   sierra_view.item_record_property 	AS p
 JOIN
@@ -28,13 +35,6 @@ JOIN
   sierra_view.record_metadata		AS m
 on
   i.record_id = m.id
-
-
--- Don't think I need this table
--- LEFT OUTER JOIN
---   sierra_view.checkout			AS c
--- ON
---   (i.record_id = c.item_record_id)
 
 
 LEFT OUTER JOIN
@@ -58,15 +58,15 @@ m.campus_code = ''
 
 AND
 
---i.location_code = 'scr' --test
-i.location_code = '$location'  --production
+i.location_code = 'scr' --test
+--i.location_code = '$location'  --production
 
   --comment out this section for items organized by title
 AND
 --test
---p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
+p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
 --production
-p.call_number_norm BETWEEN lower('$start') AND lower('$end')
+--p.call_number_norm BETWEEN lower('$start') AND lower('$end')
 
 --LIMIT 100
 ORDER BY
