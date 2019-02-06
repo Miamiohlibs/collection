@@ -1,7 +1,8 @@
 ﻿SELECT
 --count(*)
 DISTINCT m.record_type_code || m.record_num	AS item_record_num,
-i.item_status_code,
+i.item_status_code || ' ' || sn.name AS item_status,
+--include status code label 
 -- Copy --not sure we can get copy
 p.call_number_norm,
 -- Volume
@@ -32,6 +33,16 @@ ON
   p.item_record_id = i.id
 
 JOIN
+  sierra_view.item_status_property 	AS s
+ON
+  s.code = i.item_status_code
+
+JOIN
+  sierra_view.item_status_property_name	AS sn
+ON
+  s.id = sn.item_status_property_id
+
+JOIN
   sierra_view.record_metadata		AS m
 on
   i.record_id = m.id
@@ -48,7 +59,7 @@ ON
   l.item_record_id = i.id
 
 LEFT JOIN
-  sierra_view.bib_record_property as b
+  sierra_view.bib_record_property 	AS b
 ON
   b.bib_record_id = l.bib_record_id
 
