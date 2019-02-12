@@ -14,6 +14,8 @@ $end = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['end']);
 $location = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['location']);
 
 $query = "
+--Query by Craig Boman Miami University Libraries
+
 SELECT
 --count(*)
 DISTINCT m.record_type_code || m.record_num	AS item_record_num,
@@ -24,13 +26,16 @@ p.call_number_norm,
 b.best_author,
 b.best_title,
 b.publish_year,
+i.last_checkout_gmt,
 i.last_checkin_gmt,
 i.checkout_total,
-i.internal_use_count,
+i.internal_use_count
 -- Renewals,
 
---Good items works in pgadmin but fails in php
-(SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id AND i.item_status_code IN ('-','o')) AS Good_copies
+
+--   (SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id
+--     AND i.item_status_code IN ('-','o')) AS "Good items"  --good items select by Phil Shirley
+
 
 FROM
   sierra_view.item_record_property 	AS p
@@ -60,17 +65,10 @@ on
   i.record_id = m.id
 
 
--- Don't think I need this table
--- LEFT OUTER JOIN
---   sierra_view.checkout			AS c
--- ON
---   (i.record_id = c.item_record_id)
-
-
 LEFT OUTER JOIN
   sierra_view.varfield			AS v
 ON
-  i.id = v.record_id 
+  i.id = v.record_id
 
 LEFT JOIN
   sierra_view.bib_record_item_record_link AS l
@@ -78,7 +76,7 @@ ON
   l.item_record_id = i.id
 
 LEFT JOIN
-  sierra_view.bib_record_property as b
+  sierra_view.bib_record_property 	AS b
 ON
   b.bib_record_id = l.bib_record_id
 
@@ -98,9 +96,10 @@ AND
 --production
 p.call_number_norm BETWEEN lower('$start') AND lower('$end')
 
---LIMIT 100
+--LIMIT 100 --test
 ORDER BY
 p.call_number_norm ASC
+
 ";
 
 
