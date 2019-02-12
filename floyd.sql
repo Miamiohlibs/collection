@@ -10,14 +10,15 @@ p.call_number_norm,
 b.best_author,
 b.best_title,
 b.publish_year,
+i.last_checkout_gmt,
 i.last_checkin_gmt,
 i.checkout_total,
-i.internal_use_count,
+i.internal_use_count
 -- Renewals,
 
 
-  (SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id
-    AND i.item_status_code IN ('-','o')) AS "Good items"  --good items select by Phil Shirley
+--   (SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id
+--     AND i.item_status_code IN ('-','o')) AS "Good items"  --good items select by Phil Shirley
 
 
 FROM
@@ -79,6 +80,6 @@ AND
 --production
 p.call_number_norm BETWEEN lower('$start') AND lower('$end')
 
---LIMIT 100
+--LIMIT 100 --test
 ORDER BY
 p.call_number_norm ASC
