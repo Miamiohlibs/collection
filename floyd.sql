@@ -1,6 +1,4 @@
-﻿--Query by Craig Boman Miami University Libraries
-
-SELECT
+﻿SELECT --Query by Craig Boman Miami University Libraries
 --count(*)
 DISTINCT m.record_type_code || m.record_num	AS item_record_num,
 i.item_status_code || ' ' || sn.name AS item_status,
@@ -70,15 +68,15 @@ m.campus_code = ''
 
 AND
 
---i.location_code = 'scr' --test
-i.location_code = '$location'  --production
+i.location_code = 'scr' --test
+--i.location_code = '$location'  --production
 
   --comment out this section for items organized by title
 AND
 --test
---p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
+p.call_number_norm BETWEEN lower('AY   67 N5 W7  2005') AND lower('PN  171 F56 W35 1998')
 --production
-p.call_number_norm BETWEEN lower('$start') AND lower('$end')
+--p.call_number_norm BETWEEN lower('$start') AND lower('$end')
 
 --LIMIT 100 --test
 ORDER BY
