@@ -4,7 +4,7 @@
 function onOpen() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var menuEntries = [];
-
+  
   menuEntries.push({name: "Generate Weeding List", functionName: "batchShelf"});
   menuEntries.push({name: "Update Locations", functionName: "runLocations"});
 
@@ -45,24 +45,34 @@ function batchShelf() {
   var payload = JSON.stringify(json_data); //string representation?
   Logger.log(json_data);
 
-  //have the name of the new spreadsheet be a concat of TODAY+weeding
-  var today = Utilities.formatDate(new Date(), "GMT-5", "yyyy-MM-dd");
-  Logger.log(today);
-  var shelflist = SpreadsheetApp.getActive().insertSheet(today, SpreadsheetApp.getActive().getSheets().length);
+ //new spreadsheet named after the criteria used to create it
+  var name = start + '-' + end + ' (' + location + ')';
+  Logger.log(name);
+  var shelflist = SpreadsheetApp.getActive().insertSheet(name, SpreadsheetApp.getActive().getSheets().length);
 
-  var columns = [["item record","item status","call number","author","title","pub year","last checkout date","checkout total","internal use"]];
+  var columns = [["item record","item status","call number","author","title","pub year","last checkout date","last checkin date","checkout total","internal use"]];
   Logger.log(columns[0].length);
-
+  
   shelflist.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data);
   shelflist.getRange(1,1,1,columns[0].length).setValues(columns);
-
+  shelflist.setFrozenRows(1);
+  
 
 
 }//end function batchShelf
 
 
 function runLocations() {
-
-
-
+  var locations = 'http://ulblwebt02.lib.miamioh.edu/~bomanca/collection/locations.php';
+  
+  url = encodeURI(locations)
+  var result = UrlFetchApp.fetch(url);
+  var json_data = JSON.parse(result.getContentText());
+  var payload = JSON.stringify(json_data); //string representation?
+  
+  Logger.log(json_data);  
+  
+  
+  
+  
 }//end runLocations
