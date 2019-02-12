@@ -14,8 +14,6 @@ $end = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['end']);
 $location = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['location']);
 
 $query = "
---Query by Craig Boman Miami University Libraries
-
 SELECT
 --count(*)
 DISTINCT m.record_type_code || m.record_num	AS item_record_num,
@@ -31,10 +29,6 @@ i.last_checkin_gmt,
 i.checkout_total,
 i.internal_use_count
 -- Renewals,
-
-
---   (SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id
---     AND i.item_status_code IN ('-','o')) AS "Good items"  --good items select by Phil Shirley
 
 
 FROM
@@ -99,7 +93,6 @@ p.call_number_norm BETWEEN lower('$start') AND lower('$end')
 --LIMIT 100 --test
 ORDER BY
 p.call_number_norm ASC
-
 ";
 
 
