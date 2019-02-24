@@ -1,10 +1,10 @@
 ﻿SELECT
---*
-p.call_number_norm
+--Distinct *
+DISTINCT p.call_number_norm
 FROM
 sierra_view.item_record_property AS p
 WHERE
 p.call_number_norm != ''
 
---LIMIT 100
-ORDER BY p.call_number_norm ASC
+--LIMIT 10 -- test 
+ORDER BY p.call_number_norm ASC --production
