@@ -27,8 +27,9 @@ b.publish_year,
 i.last_checkout_gmt,
 i.last_checkin_gmt,
 i.checkout_total,
-i.internal_use_count
--- Renewals,
+i.internal_use_count,
+i.renewal_total,
+m.creation_date_gmt::date
 
 
 FROM
