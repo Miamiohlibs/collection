@@ -11,9 +11,9 @@ b.publish_year,
 i.last_checkout_gmt,
 i.last_checkin_gmt,
 i.checkout_total,
-i.internal_use_count
--- Renewals,
-
+i.internal_use_count,
+i.renewal_total,
+m.creation_date_gmt::date 
 
 --   (SELECT COUNT(*) FROM sierra_view.item_record i WHERE l.item_record_id = i.id
 --     AND i.item_status_code IN ('-','o')) AS "Good items"  --good items select by Phil Shirley
@@ -65,6 +65,8 @@ ON
 
 WHERE
 m.campus_code = ''
+AND
+m.deletion_date_gmt is null -- just in case
 
 AND
 
