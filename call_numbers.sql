@@ -2,7 +2,7 @@
 
 SELECT
 --Distinct *
-DISTINCT left(p.call_number_norm,7) AS left_call
+DISTINCT left(p.call_number_norm,7) AS left_call 
 FROM
 sierra_view.item_record_property AS p
 
