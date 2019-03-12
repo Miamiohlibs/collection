@@ -10,6 +10,7 @@ function onOpen() {
 
   menuEntries.push({name: "Generate Weeding List", functionName: "batchShelf"});
   menuEntries.push({name: "Update Locations", functionName: "runLocations"});
+  menuEntries.push({name: "Update Call Numbers", functionName: "updateCalls"});
 
   spreadsheet.addMenu("Weeding", menuEntries);
 } //end function onOpen()
@@ -40,7 +41,7 @@ function batchShelf() {
 
   var url = 'http://ulblwebt02.lib.miamioh.edu/~bomanca/collection/floyd.php?'
   + 'location=' + location + '&' + 'start=' + start + '&' + 'end=' + end;
-  url = encodeURI(url)
+  url = encodeURI(url);
   Logger.log(url);
 
   var result = UrlFetchApp.fetch(url);
@@ -56,7 +57,7 @@ function batchShelf() {
   var columns = [["item record","item status","call number","author","title","pub year","last checkout date","last checkin date","checkout total","internal use","renewals","date acquired","Decision"]];
   Logger.log(columns[0].length);
 
-  shelflist.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data);
+  shelflist.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data); //keeps breaking on length; something to do with the shorter call numbers??
   shelflist.getRange(1,1,1,columns[0].length).setValues(columns);
   shelflist.setFrozenRows(1);
 
@@ -95,10 +96,29 @@ function runLocations() {
 
   Logger.log(json_data);
 
-  var name = 'location list'
+  var name = 'location list';
   var list = SpreadsheetApp.getActive().insertSheet(name, SpreadsheetApp.getActive().getSheets().length);
-  var columns = [["location code","location labal"]]
+  var columns = [["location code","location labal"]];
   list.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data);
   list.getRange(1,1,1,columns[0].length).setValues(columns);
 
 }//end runLocations
+
+
+function updateCalls() {
+  var calls = 'http://ulblwebt02.lib.miamioh.edu/~bomanca/collection/call_numbers.php';
+
+  url = encodeURI(calls)
+  var result = UrlFetchApp.fetch(url);
+  var json_data = JSON.parse(result.getContentText());
+  var payload = JSON.stringify(json_data); //string representation?
+
+  Logger.log(json_data);
+
+  var name = 'Call numbers';
+  var list = SpreadsheetApp.getActive().insertSheet(name, SpreadsheetApp.getActive().getSheets().length);
+  var columns = [["Call Numbers"]];
+  list.getRange(2,1,json_data.length,json_data[0].length).setValues(json_data);
+  list.getRange(1,1,1,columns[0].length).setValues(columns);
+
+}//end updateCalls
