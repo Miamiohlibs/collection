@@ -6,6 +6,9 @@
 
 //to update beta scripts, edit source at https://script.google.com/a/miamioh.edu/ for Craig Boman
 //this allows for a shared library between all of the weeding collection tools
+//
+//for instructions on setting shared libraries https://developers.google.com/apps-script/guides/libraries
+
 
 function onOpen() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
