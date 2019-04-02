@@ -9,8 +9,8 @@ require_once('getdb.php');
 
 $db_handle = getdb(); //call the db function
 
-$start = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['start']);
-$end = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['end']);
+$start = preg_replace("/[^a-zA-Z0-9\s]/", "", $_GET['start']);
+$end = preg_replace("/[^a-zA-Z0-9\s]/", "", $_GET['end']);
 $location = preg_replace("/[^a-zA-Z0-9]/", "", $_GET['location']);
 
 $query = "
